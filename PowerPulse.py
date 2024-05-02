@@ -405,6 +405,12 @@ class FitnessApp(tk.Tk):
         else:
             messagebox.showinfo("Éxito", "Ejercicio registrado correctamente.")
 
+        # Sobrescribir la información de peso y altura en el archivo user_info.json
+        self.user_info["peso"] = weight
+        self.user_info["altura"] = height
+        with open("user_info.json", "w") as file:
+            json.dump(self.user_info, file)
+
     def view_progress(self):
         try:
             with open("registerroutines.txt", "r") as file:
