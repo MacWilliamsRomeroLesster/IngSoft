@@ -7,11 +7,11 @@ def install(package):
 # Verificar e instalar las librerías necesarias
 try:
     import tkinter as tk
-    from tkinter import messagebox, filedialog
+    from tkinter import ttk, messagebox, filedialog
 except ImportError:
     install('tkinter')
     import tkinter as tk
-    from tkinter import messagebox, filedialog
+    from tkinter import ttk,messagebox, filedialog
 
 try:
     import json
@@ -49,6 +49,14 @@ class FitnessApp(tk.Tk):
         self.title("Fitness App")
         self.attributes("-fullscreen", True)
 
+        # Botón de cierre
+        self.close_button = ttk.Button(self, text="Cerrar App", command=self.quit)
+        self.close_button.place(x=10, y=10)
+
+        # Botón para ver información de usuario
+        self.info_button = ttk.Button(self, text="Ver Info", command=self.show_user_info)
+        self.info_button.place(x=100, y=10)
+
         self.current_view = None
         self.user_info = self.load_user_info()
 
@@ -64,9 +72,12 @@ class FitnessApp(tk.Tk):
             self.show_main_screen()
         else:
             self.show_login_screen()
-
-    def update_user_info_label(self):
-        self.user_info_label.config(text="Nombre: {}\nPeso: {}\nAltura: {}".format(self.user_info['nombre'], self.user_info['peso'], self.user_info['altura']))
+   
+    def show_user_info(self):
+        messagebox.showinfo("Información del Usuario", 
+                            f"Nombre: {self.user_info['nombre']}\n"
+                            f"Peso: {self.user_info['peso']}\n"
+                            f"Altura: {self.user_info['altura']}")
 
     def show_login_screen(self):
         if self.current_view is not None:
@@ -95,7 +106,6 @@ class FitnessApp(tk.Tk):
         tk.Button(self.current_view, text="Iniciar Sesión", command=self.login, bg="#4CAF50", fg="white", font=("Arial", 14)).pack(pady=20)
 
     def show_main_screen(self):
-        self.update_user_info_label()
 
         if self.current_view is not None:
             self.current_view.destroy()
@@ -136,7 +146,6 @@ class FitnessApp(tk.Tk):
             json.dump(self.user_info, file)
 
         messagebox.showinfo("Información del Usuario", "Información actualizada con éxito!")
-        self.update_user_info_label()
 
     def login(self):
         self.save_user_info()
